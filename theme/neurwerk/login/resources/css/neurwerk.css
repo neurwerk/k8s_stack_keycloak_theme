@@ -17,6 +17,7 @@
 :root {
   color-scheme: light;
   --nw-primary: #5563ab;
+  --nw-primary-dark: #2a3c96;
   --nw-text: #212121;
   --nw-muted: #5f5f6b;
   --nw-border: #c7c5d4;
@@ -26,10 +27,10 @@
   --pf-v5-global--FontFamily--text: Inter, Arial, sans-serif;
   --pf-v5-global--FontFamily--heading: Inter, Arial, sans-serif;
   --pf-v5-global--primary-color--100: var(--nw-primary);
-  --pf-v5-global--primary-color--200: #2a3c96;
+  --pf-v5-global--primary-color--200: var(--nw-primary-dark);
   --pf-v5-global--active-color--100: var(--nw-primary);
   --pf-v5-global--link--Color: var(--nw-primary);
-  --pf-v5-global--link--Color--hover: #2a3c96;
+  --pf-v5-global--link--Color--hover: var(--nw-primary-dark);
   --pf-v5-global--Color--100: var(--nw-text);
   --pf-v5-global--Color--200: var(--nw-muted);
 }
@@ -37,37 +38,81 @@
 .login-pf body {
   min-height: 100vh;
   min-height: 100dvh;
-  height: auto;
-  background: radial-gradient(ellipse at 50% 0%, #eaecf5 0%, transparent 65%), #f4f4f8;
+  margin: 0;
+  background: var(--nw-primary);
   color: var(--nw-text);
   font-family: Inter, Arial, sans-serif;
   font-size: 16px;
 }
 
 .pf-v5-c-login {
+  display: block;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: 48px 20px;
+  padding: 0;
 }
 
 .pf-v5-c-login__container {
+  display: grid;
+  align-items: stretch;
   width: 100%;
-  max-width: 460px;
-  margin: auto;
+  max-width: none;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
   padding: 0;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas: 'header main';
   column-gap: 0;
-  row-gap: 28px;
+  row-gap: 0;
+}
+
+#kc-header {
+  grid-area: header;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  align-self: stretch;
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 48px clamp(32px, 6vw, 96px);
+  overflow: hidden;
+  background: #fff;
+}
+
+/* The company mark is visual branding; the Neurwerk wordmark remains text-accessible. */
+#kc-header::before {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: clamp(180px, 50%, 480px);
+  max-width: calc(100% - 48px);
+  aspect-ratio: 1483 / 1195;
+  background: url('../img/company-logo.png') center / contain no-repeat;
+  content: '';
+  transform: translate(-50%, -50%);
 }
 
 #kc-header-wrapper {
+  display: none;
+  position: relative;
+  z-index: 1;
   padding: 0;
   color: var(--nw-text) !important;
-  text-transform: none;
   letter-spacing: normal;
+  text-transform: none;
 }
 
-/* Keep a real accessible brand name behind the decorative image. */
+#kc-header-wrapper div.kc-logo-text {
+  height: var(--keycloak-logo-height);
+  width: var(--keycloak-logo-width);
+  margin: 0;
+  background-image: var(--keycloak-logo-url);
+  background-position: center;
+}
+
+/* Keep a real accessible brand name behind the decorative wordmark image. */
 div.kc-logo-text span {
   display: block;
   position: absolute;
@@ -81,51 +126,148 @@ div.kc-logo-text span {
 }
 
 .pf-v5-c-login__main {
+  position: relative;
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   min-width: 0;
-  border: 1px solid var(--nw-border);
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 8px 32px rgb(42 60 150 / 4%);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(40px, 8vh, 96px) clamp(32px, 8vw, 128px);
+  padding-bottom: max(64px, 8vh);
+  border: 0;
+  border-radius: 0;
+  background: var(--nw-primary);
+  box-shadow: none;
+  color: #fff;
+}
+
+.pf-v5-c-login__main > * {
+  width: min(100%, 420px);
+  margin-inline: auto;
+}
+
+.pf-v5-c-login__main:has(#kc-totp-settings, #kc-recovery-codes-list) {
+  padding-inline: clamp(24px, 4vw, 64px);
+}
+
+.pf-v5-c-login__main:has(#kc-totp-settings, #kc-recovery-codes-list) > * {
+  width: min(100%, 560px);
+}
+
+.nw-page-brand {
+  font-size: 26px;
+  line-height: 1.3;
+}
+
+.nw-instruction,
+.pf-v5-c-login__main .instruction {
+  margin-bottom: 24px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
 }
 
 .pf-v5-c-login__main-header {
-  display: flex;
-  flex-direction: column;
+  display: block;
+  padding: 0 0 24px;
   border-top: 0;
-  padding: 32px 32px 24px;
-  gap: 16px;
 }
 
-.pf-v5-c-login__main-header-utilities {
-  width: 160px;
-  max-width: 100%;
+/* Locale choice remains available through Keycloak URLs, but is not shown in the login UI. */
+.pf-v5-c-login__main-header-utilities,
+#kc-registration-container {
+  display: none;
 }
 
 #kc-page-title {
+  color: #fff;
   font-size: 26px;
-  line-height: 1.3;
   font-weight: 600;
+  line-height: 1.3;
   letter-spacing: -0.6px;
   overflow-wrap: anywhere;
 }
 
+.nw-heading-logo {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  width: 5.5em;
+  height: 1em;
+  vertical-align: -0.12em;
+  background: var(--keycloak-logo-url) center / contain no-repeat;
+  filter: brightness(0) invert(1);
+}
+
+.nw-company-name {
+  display: none;
+}
+
 .pf-v5-c-login__main-body {
-  padding: 0 32px 24px;
+  padding: 0;
 }
 
 .pf-v5-c-form {
   row-gap: 20px;
 }
 
-.pf-v5-c-form__label {
+.pf-v5-c-form > .pf-v5-c-form__group {
+  row-gap: 0;
+}
+
+.pf-v5-c-form__helper-text:not(:has(input, a, .pf-v5-c-helper-text__item-text)) {
+  display: none;
+}
+
+/* Match the 21px label line and 4px label gap above the other controls. */
+.pf-v5-c-form .pf-v5-c-form__label {
+  line-height: 21px;
+}
+
+.pf-v5-c-form .pf-v5-c-form__group-label {
+  padding-bottom: 4px !important;
+}
+
+.nw-sign-in-action {
+  padding-top: 25px;
+}
+
+.nw-sign-in-action .pf-v5-c-form__actions {
+  padding-top: 0 !important;
+  margin-top: 0;
+}
+
+.pf-v5-c-button.pf-m-primary {
+  --pf-v5-c-button--m-primary--BackgroundColor: var(--nw-primary-dark);
+  --pf-v5-c-button--m-primary--Color: #fff;
+  --pf-v5-c-button--m-primary--hover--BackgroundColor: #36408a;
+  --pf-v5-c-button--m-primary--hover--Color: #fff;
+  --pf-v5-c-button--m-primary--focus--BackgroundColor: #36408a;
+  --pf-v5-c-button--m-primary--focus--Color: #fff;
+  --pf-v5-c-button--m-primary--active--BackgroundColor: #36408a;
+  --pf-v5-c-button--m-primary--active--Color: #fff;
+}
+
+.pf-v5-c-form > .pf-v5-c-form__actions {
+  padding-top: 25px !important;
+}
+
+.pf-v5-c-form__actions {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pf-v5-c-form__label,
+.pf-v5-c-form__helper-text,
+.pf-v5-c-helper-text {
+  color: #fff;
   font-size: 14px;
-  color: var(--nw-text);
 }
 
 .pf-v5-c-form-control {
   --pf-v5-c-form-control--BorderRadius: 8px;
   --pf-v5-c-form-control--before--BorderColor: var(--nw-border);
-  --pf-v5-c-form-control--after--BorderBottomColor: var(--nw-primary);
+  --pf-v5-c-form-control--after--BorderBottomColor: var(--nw-primary-dark);
   border-radius: 8px;
 }
 
@@ -134,9 +276,13 @@ div.kc-logo-text span {
   border-radius: 8px;
 }
 
+:is(input, select, textarea).pf-v5-c-form-control,
 .pf-v5-c-form-control > :is(input, select, textarea) {
+  width: 100%;
   min-height: 46px;
   border-radius: 8px;
+  background: #fff;
+  color: var(--nw-text);
   font-size: 16px;
 }
 
@@ -148,38 +294,109 @@ div.kc-logo-text span {
   font-weight: 600;
 }
 
-.pf-v5-c-button.pf-m-primary {
-  --pf-v5-c-button--m-primary--BackgroundColor: var(--nw-primary);
-  --pf-v5-c-button--m-primary--hover--BackgroundColor: #2a3c96;
-  --pf-v5-c-button--m-primary--focus--BackgroundColor: #2a3c96;
-  --pf-v5-c-button--m-primary--active--BackgroundColor: #2a3c96;
-}
-
 .pf-v5-c-button.pf-m-secondary {
-  --pf-v5-c-button--m-secondary--Color: var(--nw-primary);
-  --pf-v5-c-button--m-secondary--BorderColor: var(--nw-border);
+  --pf-v5-c-button--m-secondary--Color: #fff;
+  --pf-v5-c-button--m-secondary--BorderColor: rgb(255 255 255 / 70%);
+  --pf-v5-c-button--m-secondary--hover--Color: #fff;
+  --pf-v5-c-button--m-secondary--focus--Color: #fff;
+  --pf-v5-c-button--m-secondary--active--Color: #fff;
+  --pf-v5-c-button--m-secondary--hover--BackgroundColor: rgb(255 255 255 / 12%);
+  --pf-v5-c-button--m-secondary--focus--BackgroundColor: rgb(255 255 255 / 12%);
 }
 
-.pf-v5-c-input-group {
-  gap: 6px;
+/* Older required-action templates use button containers rather than action macros. */
+:is(#kc-update-profile-form, #kc-verify-email-form) #kc-form-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 25px;
 }
 
-[data-password-toggle] {
-  padding-inline: 10px;
+#kc-totp-settings-form > .pf-v5-c-form__group.pf-m-action,
+#kc-recovery-codes-settings-form {
+  margin-top: 25px;
+}
+
+#kc-recovery-codes-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pf-v5-c-login__main :is(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--nw-primary-dark);
+}
+
+.pf-v5-c-input-group:has(#reset-login) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.pf-v5-c-form-control > input:is(:disabled, [readonly]) {
+  background-color: #eaecf5;
   color: var(--nw-muted);
-  font-size: 12px;
-  white-space: normal;
 }
 
-/* The upstream script owns the state and translated accessible label. */
-[data-password-toggle] > i {
-  display: none;
+/* Overlay the native button wrapper, not just its button, inside the field. */
+.pf-v5-c-input-group:has([data-password-toggle]) {
+  display: block;
+  position: relative;
+  width: 100%;
 }
 
-[data-password-toggle]::after {
-  content: attr(aria-label);
+.pf-v5-c-input-group:has([data-password-toggle]) > .pf-v5-c-input-group__item.pf-m-fill {
+  width: 100%;
+}
+
+.pf-v5-c-input-group > .pf-v5-c-input-group__item:has(> [data-password-toggle]) {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 2;
+  width: 46px;
+  background: transparent;
+}
+
+.pf-v5-c-input-group:has([data-password-toggle]) input {
+  padding-inline-end: 50px;
+}
+
+.pf-v5-c-button[data-password-toggle] {
+  position: relative;
+  inset: auto;
+  display: grid;
+  width: 46px;
+  min-height: 46px;
+  height: 46px;
+  padding: 0;
   border: 0;
-  position: static;
+  background: transparent;
+  color: var(--nw-muted);
+  box-shadow: none;
+  place-items: center;
+}
+
+.pf-v5-c-button[data-password-toggle]:focus-visible {
+  outline-color: var(--nw-primary-dark);
+  outline-offset: -4px;
+}
+
+.nw-forgot-password {
+  text-align: right;
+  font-size: 14px;
+}
+
+/* The upstream script owns the icon state and translated accessible label. */
+[data-password-toggle] > i {
+  display: inline-block;
+  font-size: 16px;
+}
+
+.pf-v5-c-button[data-password-toggle]::before,
+.pf-v5-c-button[data-password-toggle]::after {
+  content: none;
 }
 
 #reset-login > i,
@@ -188,17 +405,99 @@ div.kc-logo-text span {
 }
 
 #reset-login::after {
-  content: attr(aria-label);
   position: static;
   border: 0;
+  content: attr(aria-label);
 }
 
 #reset-login {
+  color: #fff;
+  background: transparent;
   font-size: 12px;
   white-space: normal;
 }
 
-/* Hide decoration, not functional copy controls, dropdowns, or QR codes. */
+.pf-v5-c-login__main {
+  --pf-v5-c-check__label--Color: #fff;
+  --pf-v5-c-button--m-link--Color: #fff;
+  --pf-v5-c-button--m-link--hover--Color: #fff;
+}
+
+.pf-v5-c-login__main .pf-v5-u-color-200 {
+  color: #fff !important;
+}
+
+/* Light surfaces must not inherit white text from the blue pane. */
+.pf-v5-c-login__main :is(.pf-v5-c-panel, .pf-v5-c-tile, .pf-v5-c-data-list, .pf-v5-c-clipboard-copy__expandable-content) {
+  color: var(--nw-text);
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.pf-v5-c-login__main :is(.pf-v5-c-alert, .pf-v5-c-panel, .pf-v5-c-tile, .pf-v5-c-data-list) :is(a, .pf-v5-u-color-200) {
+  color: var(--nw-primary-dark) !important;
+}
+
+.pf-v5-c-login__main .pf-v5-c-helper-text__item.pf-m-error,
+.pf-v5-c-login__main .kc-feedback-text.pf-m-error {
+  color: #fff;
+}
+
+#kc-totp-settings {
+  line-height: 1.65;
+}
+
+#kc-totp-settings > li + li {
+  margin-top: 20px;
+}
+
+#kc-totp-secret-qr-code {
+  background: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  margin-block: 12px;
+}
+
+#kc-recovery-codes-list {
+  font-family: monospace;
+  line-height: 1.8;
+}
+
+#kc-recovery-codes-list li {
+  break-inside: avoid;
+  padding-inline-end: 12px;
+}
+
+.pf-v5-c-login__main .pf-v5-c-panel:has(#kc-recovery-codes-list) {
+  margin-block: 20px;
+}
+
+:is(#printRecoveryCodes, #downloadRecoveryCodes, #copyRecoveryCodes) {
+  padding-inline: 8px;
+  margin-block: 4px;
+}
+
+.pf-v5-c-login__main :is(.pf-v5-c-panel, .pf-v5-c-tile, .pf-v5-c-data-list) :is(a, button, input):focus-visible {
+  outline-color: var(--nw-primary-dark);
+}
+
+.pf-v5-c-login__main .pf-v5-c-helper-text__item:is(.pf-m-error, .pf-m-success, .pf-m-warning) {
+  --pf-v5-c-helper-text__item--Color: #fff;
+  --pf-v5-c-helper-text__item-icon--Color: #fff;
+  color: #fff;
+}
+
+.pf-v5-c-alert__description {
+  grid-column: 1;
+}
+
+.pf-v5-c-login__main a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Hide decoration, not functional controls, dropdowns, or QR codes. */
 .pf-v5-c-alert__icon,
 .pf-v5-c-form-control__icon.pf-m-status,
 .select-auth-container .pf-m-icon,
@@ -211,6 +510,8 @@ div.kc-logo-text span {
 .pf-v5-c-alert {
   grid-template-columns: 1fr;
   border-radius: 8px;
+  background: #fff;
+  color: var(--nw-text);
 }
 
 .pf-v5-c-alert__title {
@@ -218,27 +519,35 @@ div.kc-logo-text span {
 }
 
 .pf-v5-c-login__main-footer-band {
-  background: transparent;
   padding-inline: 0;
+  background: transparent;
+}
+
+.pf-v5-c-login__main > .pf-v5-c-login__main-footer:has(> .nw-footer) {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  width: auto;
+  margin: 0;
+  padding: 0;
 }
 
 .nw-footer {
-  padding: 0 24px 24px;
-  text-align: center;
+  padding: 0;
+  text-align: right;
   font-size: 12px;
 }
 
 .nw-footer a {
-  color: var(--nw-muted);
-  text-decoration: none;
+  color: rgb(255 255 255 / 78%);
 }
 
 .nw-footer a:hover {
-  text-decoration: underline;
+  color: #fff;
 }
 
 :is(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid var(--nw-primary);
+  outline: 2px solid #fff;
   outline-offset: 3px;
 }
 
@@ -253,17 +562,49 @@ img {
   height: auto;
 }
 
-@media (max-width: 480px) {
-  .pf-v5-c-login {
-    padding: 28px 16px;
+@media (max-width: 767px) {
+  .pf-v5-c-login__container {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'main';
+  }
+
+  #kc-header {
+    display: none;
+  }
+
+  .nw-company-name {
+    display: block;
+    margin-bottom: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .pf-v5-c-login__main {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 40px 20px 64px;
   }
 
   .pf-v5-c-login__main-header {
-    padding: 24px 20px 20px;
+    padding-bottom: 20px;
   }
 
-  .pf-v5-c-login__main-body {
-    padding: 0 20px 24px;
+  .pf-v5-c-login__main > * {
+    width: min(100%, 420px);
+  }
+}
+
+@media (max-width: 480px) {
+  #kc-recovery-codes-list {
+    columns: 1;
+  }
+  #kc-header-wrapper div.kc-logo-text {
+    transform: scale(0.9);
+    transform-origin: center bottom;
   }
 
   #kc-page-title {
@@ -272,6 +613,21 @@ img {
 }
 
 @media (forced-colors: active) {
+  .nw-heading-logo {
+    width: auto;
+    height: auto;
+    background: none;
+    filter: none;
+  }
+
+  .nw-heading-logo::after {
+    content: 'neurwerk';
+  }
+
+  #kc-header::before {
+    display: none;
+  }
+
   div.kc-logo-text {
     background-image: none;
     width: auto;

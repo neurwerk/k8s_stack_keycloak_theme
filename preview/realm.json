@@ -49,6 +49,56 @@
           "temporary": false
         }
       ]
+    },
+    {
+      "username": "theme-otp",
+      "email": "theme-otp@example.test",
+      "firstName": "OTP",
+      "lastName": "Preview",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": ["CONFIGURE_TOTP"],
+      "credentials": [{ "type": "password", "value": "Preview-only-123!", "temporary": false }]
+    },
+    {
+      "username": "theme-password",
+      "email": "theme-password@example.test",
+      "firstName": "Password",
+      "lastName": "Preview",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": ["UPDATE_PASSWORD"],
+      "credentials": [{ "type": "password", "value": "Preview-only-123!", "temporary": false }]
+    },
+    {
+      "username": "theme-profile",
+      "email": "theme-profile@example.test",
+      "firstName": "Profile",
+      "lastName": "Preview",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": ["UPDATE_PROFILE"],
+      "credentials": [{ "type": "password", "value": "Preview-only-123!", "temporary": false }]
+    },
+    {
+      "username": "theme-verify",
+      "email": "theme-verify@example.test",
+      "firstName": "Email",
+      "lastName": "Preview",
+      "enabled": true,
+      "emailVerified": false,
+      "requiredActions": ["VERIFY_EMAIL"],
+      "credentials": [{ "type": "password", "value": "Preview-only-123!", "temporary": false }]
+    },
+    {
+      "username": "theme-recovery",
+      "email": "theme-recovery@example.test",
+      "firstName": "Recovery",
+      "lastName": "Preview",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": ["CONFIGURE_RECOVERY_AUTHN_CODES"],
+      "credentials": [{ "type": "password", "value": "Preview-only-123!", "temporary": false }]
     }
   ]
 }

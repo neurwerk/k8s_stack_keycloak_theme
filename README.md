@@ -1,8 +1,8 @@
 # Neurwerk Keycloak Theme
 
 A small native Keycloak theme for Neurwerk's user-facing authentication pages
-and emails. White surfaces, Inter typography, indigo accents, slightly rounded
-corners, and text controls instead of decorative icons.
+and emails. The desktop login uses a white brand pane and indigo authentication
+pane, with Inter typography, rounded controls, and native accessible icons.
 
 ## Scope
 
@@ -17,18 +17,37 @@ corners, and text controls instead of decorative icons.
   is changed by installing the theme.
 
 The theme is named `neurwerk`. Login extends `keycloak.v2`; email extends
-`keycloak`. The only FreeMarker overrides are the login footer and HTML email
-layout. No login forms, upstream JavaScript, action emails, or text emails are
-copied. English, German, and Dutch branding bundles supplement upstream messages.
-The theme intentionally uses light mode, even if the OS prefers dark mode.
+`keycloak`. FreeMarker overrides cover the shared authentication layout, login
+page, forgot-password page, login footer, and HTML email layout. Forms use
+Keycloak's native field and button macros. Password recovery follows Sign in;
+the recovery page puts instructions first and a back link after Submit.
+The desktop brand pane uses the cropped company mark bundled at
+`login/resources/img/company-logo.png`; the original supplied asset is retained
+at `theme/logos/example_company.png`. English, German, and Dutch branding bundles
+supplement upstream messages. The theme intentionally uses light mode, even if
+the OS prefers dark mode.
+
+On small screens, the white company-logo pane is hidden. The company name
+appears above the Neurwerk wordmark instead; set `companyName` in
+`theme/neurwerk/login/theme.properties` to customize it.
+
+Reset-password, email verification, OTP, recovery codes, required actions, and
+info/error pages share the wordmark, dark-indigo primary buttons, white fields,
+and bottom-right credit. Functional page titles remain visible. OTP setup and
+recovery-code pages have wider content areas and scroll naturally on short screens.
+
+HTML emails use a blue text-co-branded header, white body, dark-indigo links, and
+a right-aligned credit. Set `companyName` in `theme/neurwerk/email/theme.properties`
+to the same company name as the login theme. No remote images are required;
+Keycloak supplies action links, expiry text, translations, and plain-text emails.
 
 ## Local Preview
 
-Requires Docker with Compose v2 and the Node version in `.tool-versions` (via
-mise). The preview is disposable and binds host ports only to loopback.
+Requires Docker with Compose v2. The preview is disposable and binds host ports
+only to loopback.
 
 ```bash
-mise exec -- docker compose up --build --wait --wait-timeout 300
+docker compose up --build --wait --wait-timeout 300
 ```
 
 - [Open the login preview](http://localhost:8080/realms/neurwerk/protocol/openid-connect/auth?client_id=theme-preview&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fcallback&response_type=code&scope=openid)
@@ -42,42 +61,37 @@ Registration is enabled only in the preview realm. Successful login redirects to
 an intentionally unimplemented `/callback` URL with an authorization code; a 404
 there is expected. This is an authentication preview, not an OIDC application.
 
+### Preview Individual Screens
+
+Use the login preview link above in a private window (or sign out between users).
+All accounts below initially use `Preview-only-123!`:
+
+| Username | Screen shown after signing in |
+| --- | --- |
+| `theme-password` | Set a new password |
+| `theme-otp` | Set up an authenticator, including QR and manual setup |
+| `theme-profile` | Update profile |
+| `theme-verify` | Verify email; the message appears in Mailpit |
+| `theme-recovery` | Generate and save recovery codes |
+
+To view OTP login, complete enrollment for `theme-otp` using your authenticator,
+then sign in again in a fresh private session. Completing a required action
+removes that prompt for the account. Recreating the disposable Keycloak container
+resets these accounts from `preview/realm.json`.
+
+For **forgot password**, click “Forgot password?” on the login page and enter
+`theme-user`. Open the message in [Mailpit](http://localhost:8025) and follow its
+link to see the **new-password** page. `theme-password` is a shortcut to the
+new-password form without sending an email.
+
 ```bash
-mise exec -- docker compose down
+docker compose down
 ```
 
 No persistent volumes are created. Removing the preview containers removes its
 users, messages, and enrollment state. Rebuild/recreate after changing the theme;
 the preview exercises the same baked-in assets as the image, not a live mount.
 Never use this Compose setup or its `start-dev` command in production.
-
-## Checks
-
-```bash
-mise exec -- npm ci
-mise exec -- make check
-mise exec -- npx playwright install --with-deps chromium
-# Start the disposable preview before integration checks.
-mise exec -- make integration
-```
-
-`make check` guards theme inheritance, the limited override surface, local asset
-references, branding message bundles, and the preview contract. Integration checks
-use real Keycloak and Mailpit instances at fixed localhost addresses. They create
-isolated synthetic users and remove those users afterward.
-
-The Chromium suite covers desktop and mobile layout, password visibility,
-invalid/valid login, authorization-code return, keyboard navigation, en/de/nl,
-password-reset email and completion, required email verification, and OTP
-enrollment followed by MFA login. Screenshots and a browser report are available
-in `test-results/` and `playwright-report/`, or CI's `browser-preview` artifact.
-Artifacts contain disposable test data only and expire after seven days in CI.
-
-Screenshot review is not a pixel-baseline test. WebAuthn hardware, registration,
-expired links, screen-reader behavior, non-Chromium browsers, and actual email
-clients require additional review before production adoption. Email layout uses
-inline styles and a textual wordmark so it remains readable with images blocked;
-rounded corners and link styling may vary between email clients.
 
 ## Packaging And Releases
 
@@ -86,15 +100,15 @@ Current theme version: `0.1.0` in `VERSION`. Target Keycloak: `26.7.2`.
 The Dockerfile extends `quay.io/keycloak/keycloak:26.7.2`, pinned by digest, and adds files under
 `/opt/keycloak/themes/neurwerk/`. It preserves upstream startup behavior, caching,
 user, entrypoint, and database handling. It does not run an optimized build or add
-providers. Test and update the theme alongside every Keycloak version change.
+providers. Review and update the theme alongside every Keycloak version change.
 
-Main pushes run static, image-build, and integration validation. The initial
+Pull requests and main pushes build the theme image. The initial
 repository bootstrap is authorized to push directly to `main` without a PR;
 validation still applies. This exception does not change other repositories'
 review or release rules.
 
 Image publication is a separate, explicitly authorized action: pushing `vX.Y.Z`
-must match `VERSION` exactly and pass the validation workflow. The release workflow
+must match `VERSION` exactly and pass the image-build workflow. The release workflow
 publishes only `linux/amd64` to:
 
 ```text
