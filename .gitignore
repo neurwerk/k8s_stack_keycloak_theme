@@ -1,0 +1,10 @@
+node_modules/
+test-results/
+playwright-report/
+artifacts/
+coverage/
+.env
+.env.*
+.DS_Store
+__pycache__/
+*.pyc

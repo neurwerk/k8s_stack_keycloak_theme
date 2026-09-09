@@ -1,0 +1,8 @@
+# Only native theme assets belong in the image build context.
+**
+!Dockerfile
+!LICENSE
+!THIRD_PARTY.md
+!theme/
+!theme/neurwerk/
+!theme/neurwerk/**

@@ -1,0 +1,12 @@
+{
+  "name": "neurwerk-keycloak-theme",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --test tests/static.test.mjs",
+    "integration": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

@@ -1,0 +1,48 @@
+# Disposable local preview only. All credentials and identities are synthetic test data.
+services:
+  keycloak:
+    build: .
+    platform: linux/amd64
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: preview-admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: Disposable-preview-admin-123!
+      KC_HOSTNAME: http://localhost:8080
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - type: bind
+        source: ./preview/realm.json
+        target: /opt/keycloak/data/import/neurwerk-realm.json
+        read_only: true
+        bind:
+          create_host_path: false
+    depends_on:
+      mailpit:
+        condition: service_healthy
+    healthcheck:
+      # The upstream image has Bash but no curl. Check the imported realm, not just TCP.
+      test:
+        - CMD
+        - /bin/bash
+        - -ec
+        - >-
+          exec 3<>/dev/tcp/127.0.0.1/8080;
+          printf 'GET /realms/neurwerk/.well-known/openid-configuration HTTP/1.0\r\nHost: localhost:8080\r\n\r\n' >&3;
+          read -r protocol status rest <&3;
+          [[ "$$status" == 200 ]]
+      interval: 5s
+      timeout: 5s
+      start_period: 60s
+      retries: 48
+  mailpit:
+    image: axllent/mailpit:v1.31.1
+    platform: linux/amd64
+    ports:
+      - "127.0.0.1:8025:8025"
+    # SMTP is reachable only inside the Compose network. No persistent storage.
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
