@@ -27,6 +27,12 @@ at `theme/logos/example_company.png`. English, German, and Dutch branding bundle
 supplement upstream messages. The theme intentionally uses light mode, even if
 the OS prefers dark mode.
 
+PNG remains the default company logo format. For a native SVG, set
+`companyLogoFormat=svg` in the child login theme's `theme.properties` and provide
+`login/resources/img/company-logo.svg`. Use a self-contained SVG with the SVG
+namespace and a tightly fitted `viewBox`, without scripts or external resources.
+Layout, colors, email branding, and existing PNG clients are unchanged.
+
 On small screens, the white company-logo pane is hidden. The company name
 appears above the Neurwerk wordmark instead; set `companyName` in
 `theme/neurwerk/login/theme.properties` to customize it.
@@ -95,7 +101,7 @@ Never use this Compose setup or its `start-dev` command in production.
 
 ## Packaging And Releases
 
-Current theme version: `0.1.0` in `VERSION`. Target Keycloak: `26.7.2`.
+Current theme version: `0.1.1` in `VERSION`. Target Keycloak: `26.7.2`.
 
 The Dockerfile extends `quay.io/keycloak/keycloak:26.7.2`, pinned by digest, and adds files under
 `/opt/keycloak/themes/neurwerk/`. It preserves upstream startup behavior, caching,

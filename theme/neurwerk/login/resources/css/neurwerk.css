@@ -94,6 +94,10 @@
   transform: translate(-50%, -50%);
 }
 
+#kc-header.nw-company-logo-svg::before {
+  background-image: url('../img/company-logo.svg');
+}
+
 #kc-header-wrapper {
   display: none;
   position: relative;
