@@ -427,6 +427,10 @@ div.kc-logo-text span {
   --pf-v5-c-button--m-link--hover--Color: #fff;
 }
 
+.pf-v5-c-login__main label[for="rememberMe"] .pf-v5-c-check__label {
+  color: #fff;
+}
+
 .pf-v5-c-login__main .pf-v5-u-color-200 {
   color: #fff !important;
 }
