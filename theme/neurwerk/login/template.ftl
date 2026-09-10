@@ -123,7 +123,7 @@
 <body id="keycloak-bg" class="${properties.kcBodyClass!}" data-page-id="login-${pageId}">
 <div class="${properties.kcLogin!}">
   <div class="${properties.kcLoginContainer!}">
-    <aside id="kc-header" class="pf-v5-c-login__header" aria-label="${properties.companyName!'Example Company'}"></aside>
+    <aside id="kc-header" class="pf-v5-c-login__header<#if (properties.companyLogoFormat!'png') == 'svg'> nw-company-logo-svg</#if>" aria-label="${properties.companyName!'Example Company'}"></aside>
     <main class="${properties.kcLoginMain!}">
       <div class="${properties.kcLoginMainHeader!}">
         <#if pageId != 'login'>
