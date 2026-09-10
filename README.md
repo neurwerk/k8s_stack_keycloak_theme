@@ -101,7 +101,7 @@ Never use this Compose setup or its `start-dev` command in production.
 
 ## Packaging And Releases
 
-Current theme version: `0.1.1` in `VERSION`. Target Keycloak: `26.7.2`.
+Current theme version: `0.1.2` in `VERSION`. Target Keycloak: `26.7.2`.
 
 The Dockerfile extends `quay.io/keycloak/keycloak:26.7.2`, pinned by digest, and adds files under
 `/opt/keycloak/themes/neurwerk/`. It preserves upstream startup behavior, caching,
