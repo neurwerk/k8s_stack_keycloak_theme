@@ -1,0 +1,15 @@
+name: Bug report
+description: Report something that is not working as expected
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe what you observed and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Reproduction or details (optional)
+      description: Steps, version, logs, or screenshots if available. Remove secrets and private data.
