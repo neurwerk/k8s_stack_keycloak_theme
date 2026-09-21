@@ -1,0 +1,10 @@
+name: Task
+description: Propose implementation or maintenance work
+body:
+  - type: textarea
+    id: change
+    attributes:
+      label: What should change, and why?
+      description: A few sentences are enough. Add links or examples if useful.
+    validations:
+      required: true
