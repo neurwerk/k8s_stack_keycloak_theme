@@ -16,6 +16,10 @@ Keycloak Theme provides customized login pages and emails for neurwerk.base. See
 |  |  |
 | [Dify Add-on](https://github.com/neurwerk/k8s_stack_addon_dify) | Optional Dify package with API and web customizations, including single-workspace enforcement. |
 
+## Documentation
+
+See [Repository documentation](docs/README.md).
+
 ## Contributing and support
 
 - **Contributions:** Read [CONTRIBUTING.md](.github/CONTRIBUTING.md) before proposing a change.
